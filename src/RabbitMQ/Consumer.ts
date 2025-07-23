@@ -9,7 +9,7 @@ export const startRabbitConsumer = async () => {
     try{
         const connection = await amqp.connect(CONFIG.rabbitMQUrl);
         const channel = await connection.createChannel();
-        await channel.assertExchange(CONFIG.exchange, 'topic', { durable: false });
+        await channel.assertExchange(CONFIG.exchange, 'topic', { durable: true });
         const {queue} = await channel.assertQueue('', { exclusive: true });
 
         await channel.bindQueue(queue, CONFIG.exchange, CONFIG.topic + ".many_readings");
