@@ -4,7 +4,7 @@ export const SensorReadingsSchema = z.object({
     id: z.number(),
     value: z.number(),
     date: z.string().datetime(),
-    sensor_id: z.number(),
+    sensor_id: z.string(),
 });
 
 export type SensorReadings = z.infer<typeof SensorReadingsSchema>;
