@@ -2,8 +2,8 @@ import { SensorReadingsSchema } from "./SensorReadings";
 import * as z from "zod/v4"; 
 
 export const PayloadSensorReadingsSchema = z.object({
-    idUser: z.number(),
-    idFiltrer: z.number(),
+    idUser: z.string(),
+    idFiltrer: z.string(),
     sensorReadings: z.array(SensorReadingsSchema),
 });
 

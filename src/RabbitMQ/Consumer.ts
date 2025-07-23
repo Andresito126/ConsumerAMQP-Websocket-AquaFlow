@@ -1,12 +1,9 @@
 import amqp from 'amqplib';
 import { CONFIG } from '../../config';
 import { sendSensorReadings } from '../Socket.io/SocketClient';
-import { sendOneSensorReading } from '../Socket.io/SocketClient';
 import { sendNotification } from '../Socket.io/SocketClient';
-import { PayloadSensorReadings, PayloadSensorReadingsSchema } from '../models/Payload_SensorReadings';
-import { SensorReadingsSchema } from '../models/SensorReadings';
+import { PayloadSensorReadingsSchema } from '../models/Payload_SensorReadings';
 import { NotificationsSchema } from '../models/Notifications';
-import { OneSensorReadingsSchema } from '../models/OneSensorReadings';
 
 export const startRabbitConsumer = async () => {
     try{
@@ -15,7 +12,6 @@ export const startRabbitConsumer = async () => {
         await channel.assertExchange(CONFIG.exchange, 'topic', { durable: false });
         const {queue} = await channel.assertQueue('', { exclusive: true });
 
-        await channel.bindQueue(queue, CONFIG.exchange, CONFIG.topic + ".one_reading");
         await channel.bindQueue(queue, CONFIG.exchange, CONFIG.topic + ".many_readings");
         await channel.bindQueue(queue, CONFIG.exchange, CONFIG.topic + ".notification");
 
@@ -29,9 +25,7 @@ export const startRabbitConsumer = async () => {
                 console.log("Mensaje recibido del tópico:", topicKey);
 
                 try{
-                    if(topicKey == CONFIG.topic + ".one_reading"){
-                        sendOneSensorReading(OneSensorReadingsSchema.parse(content));
-                    } else if(topicKey == CONFIG.topic + ".many_readings"){
+                    if(topicKey == CONFIG.topic + ".many_readings"){
                         sendSensorReadings(PayloadSensorReadingsSchema.parse(content));
                     } else if(topicKey == CONFIG.topic + ".notification"){
                         sendNotification(NotificationsSchema.parse(content));

@@ -2,7 +2,6 @@ import { io, Socket } from "socket.io-client";
 import { CONFIG } from "../../config";
 import { PayloadSensorReadings } from "../models/Payload_SensorReadings";
 import { Notifications } from "../models/Notifications";
-import { OneSensorReading } from "../models/OneSensorReadings";
 
 let socket: Socket;
 
@@ -26,21 +25,6 @@ export const sendSensorReadings = (sensorReadings: PayloadSensorReadings) => {
         let userID = sensorReadings.idUser;
         console.log(sensorReadings);
         socket.emit('new_many_sensor_readings', {userID, sensorReadings});
-    } else {
-        console.log("Sin conexión al Websocket");
-    }
-}
-
-export const sendOneSensorReading = (sensorReading: OneSensorReading) => {
-    if (socket && socket.connected){
-        let userID = sensorReading.idUser;
-        let measurement = {
-            id: sensorReading.id,
-            value: sensorReading.value,
-            date: sensorReading.date,
-            sensor_id: sensorReading.sensor_id,
-        }
-        socket.emit('new_one_sensor_reading', {userID, measurement});
     } else {
         console.log("Sin conexión al Websocket");
     }
